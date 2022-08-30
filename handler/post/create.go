@@ -31,6 +31,10 @@ func Create(c *gin.Context) {
 		response.Failed(c, 400, "必须给定至少一个联系方式", nil)
 		return
 	}
+	if post.Content == "" || post.Title == "" {
+		response.Failed(c, 400, "content或title未给出", nil)
+		return
+	}
 	post.UserName = user.Name
 	db.Table("post").Create(&post)
 	response.Success(c, 200, "创建帖子成功", post)

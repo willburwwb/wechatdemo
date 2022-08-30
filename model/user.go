@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type User struct {
 	gorm.Model
 	Email string `gorm:"type:varchar(50);not null"` //邮箱登录
-	Name  string `gorm:"type:varchar(50);not null"`
+	Name  string `gorm:"type:varchar(50);not null"` //给用户赋予的名字
 }
 
 type VerifyCode struct {

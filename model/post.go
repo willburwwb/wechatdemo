@@ -11,12 +11,12 @@ type Post struct {
 	gorm.Model
 	UserName string `json:"userName" postform:"userName"` //创建帖子的人
 	Avatar   string `json:"avatar" postform:"avatar"`
-	Title    string `json:"title" postform:"title" binding:"required"`
+	Title    string `json:"title" postform:"title"`
 	QQ       string `json:"qq" postform:"qq"`
 	Wx       string `json:"wx" postform:"wx"`
-	Content  string `json:"content" postform:"content" binding:"required"`
+	Content  string `json:"content" postform:"content"`
 	Price    string `json:"price" postform:"price"`
-	Location string `json:"location" postform:"location" binding:"required"`
+	Location string `json:"location" postform:"location"`
 	Thumb    int    `json:"thumb" postform:"thumb"`
 	Reply    int    `json:"reply" postform:"thumb"`
 	Follow   int    `json:"follow" postform:"thumb"`
@@ -48,7 +48,7 @@ type ResponsePost struct {
 type ListType struct {
 	Mode   string `uri:"mode" json:"mode" form:"mode" `
 	Limit  int32  `uri:"limit" json:"limit" form:"limit"`
-	Offset int32  `uri:"offset" json:"offset" form:"offset"`
+	Offset int32  `uri:"offset" json:"offset" form:"offset" bind:"required"`
 }
 
 //点赞

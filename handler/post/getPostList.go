@@ -66,6 +66,7 @@ func InitGetPostList(c *gin.Context) (model.ListType, error) {
 func ReturnPostList(c *gin.Context, posts []model.Post) {
 	len := len(posts)
 	userid := JudgeNow(c)
+	log.Println("当前正在查询的人:", userid)
 	responsePosts := make([]model.ResponsePost, len, 50)
 	for i := 0; i < len; i++ {
 		if userid != 0 {
