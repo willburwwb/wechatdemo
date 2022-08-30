@@ -4,21 +4,17 @@ import "gorm.io/gorm"
 
 type Comment struct {
 	gorm.Model
-	Postid   uint   `json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
-	Content  string `json:"content" postform:"content" form:"content" uri:"content" binding:"required"`
-	UserName string
-}
-type ResponseComment struct {
-	gorm.Model
-	Postid     uint   `json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
-	Responseid uint   `json:"responseid" postform:"responseid" form:"responseid" uri:"responseid"`
+	Postid     uint   `gorm:"postid" json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
 	Content    string `json:"content" postform:"content" form:"content" uri:"content" binding:"required"`
 	UserName   string
+	Responseid uint `gorm:"responseid" json:"responseid" postform:"responseid" form:"responseid"`
 }
 
-type ReplyComment struct {
-	UserName         string
-	Commentid          uint `json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
-	Content          string
-	ResponseComments []ResponseComment
+type RequestCommentByPost struct {
+	Postid uint `json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
+}
+type ReplyComments struct {
+	UserName      string
+	Content       string
+	ReplyComments []ReplyComments
 }

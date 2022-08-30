@@ -22,17 +22,17 @@ func Delete(c *gin.Context) {
 		return
 	}
 	json := make(map[string]interface{})
-	if json["postid"] == 0 {
+	var post model.Post
+	if err := c.ShouldBindJSON(&json); err != nil {
+		response.Failed(c, 400, "参数错误", "")
+		return
+	}	
+	if json["postid"] == nil {
 		log.Println("postid为0")
 		response.Failed(c, 400, "postid不能为0", nil)
 		return
 	} else {
 		log.Println("postid为", json["postid"], " 类型为", reflect.TypeOf(json["postid"]))
-	}
-	var post model.Post
-	if err := c.ShouldBindJSON(&json); err != nil {
-		response.Failed(c, 400, "参数错误", "")
-		return
 	}
 	db.Where("id = ?", json["postid"]).First(&post)
 	log.Println("post's username :", post.UserName, " 你的名字", user.Name)

@@ -1,37 +1,43 @@
 package comment
 
 import (
-	"wechatdemo/database"
+	"log"
+	databasecomment "wechatdemo/database/comment"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetRePostList(commentid uint) []model.ResponseComment { //获取二级评论
-	db := database.Get()
-	var ResponseComments []model.ResponseComment
-	db.Where("responseid = ?", commentid).Find(&ResponseComments)
-	return ResponseComments
-}
-func GetCommentByPost(c *gin.Context) {
-	var replyComment model.ReplyComment
-	if err := c.ShouldBind(&replyComment); err != nil {
-		response.Failed(c, 400, "获取回复评论的参数有误", "")
+func GetCommentListByPost(c *gin.Context) {
+	var requestComment model.RequestCommentByPost
+	if err := c.ShouldBind(&requestComment); err != nil {
+		response.Failed(c, 400, "获取评论参数有误", "")
 		return
 	}
-	db := database.Get()
-	var replyComments []model.ReplyComment //所有的一级评论,每一条评论包含其二级评论的数组
-	var comments []model.Comment           //获取所有的一级评论
-	db.Where("postid = ?", replyComment.Commentid).Order("id desc").Find(&comments)
-	for i := range comments {
-		replyComment.UserName = comments[i].UserName
-		replyComment.Content = comments[i].Content
-		replyComment.ResponseComments = GetRePostList(comments[i].ID) //获取二级评论
+	var comments []model.Comment
+	var recomments []model.Comment
+	log.Println("获取评论数据")
+	comments = databasecomment.GetCommentByPost(requestComment.Postid, 0)
+	if comments == nil {
+		return
+	}
+	var replyComments []model.ReplyComments
+	for i, comment := range comments {
+		log.Println("获取第一个评论", i)
+		var replyComment model.ReplyComments
+		replyComment.Content = comment.Content
+		replyComment.UserName = comment.UserName
+
+		recomments = databasecomment.GetCommentByPost(requestComment.Postid, comment.ID)
+		for _, recomment := range recomments {
+			var reReplycomment model.ReplyComments
+			reReplycomment.Content = recomment.Content
+			reReplycomment.UserName = recomment.UserName
+			replyComment.ReplyComments = append(replyComment.ReplyComments, reReplycomment)
+		}
+
 		replyComments = append(replyComments, replyComment)
 	}
-	response.Success(c, 200, "成功返回评论列表!", replyComments)
-}
-
-func GetCommetListByPost(c *gin.Context) {
+	response.Success(c, 200, "成功", replyComments)
 }
