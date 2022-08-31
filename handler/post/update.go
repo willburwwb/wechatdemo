@@ -26,14 +26,19 @@ func Update(c *gin.Context) {
 		return
 	}
 	var post model.Post
-	if json["postid"] == 0 {
+	log.Println("postid:", json["postid"])
+	if json["postid"] == 0 || json["postid"] == nil {
 		log.Println("postid为0")
 		response.Failed(c, 400, "postid不能为0", nil)
 		return
 	} else {
 		log.Println("postid为", json["postid"], " 类型为", reflect.TypeOf(json["postid"]))
 	}
-	db.Where("id = ?", json["postid"]).First(&post)
+	if err := db.Where("id = ?", json["postid"]).First(&post).Error; err != nil {
+		log.Println("未成功查询到帖子记录", err)
+		response.Failed(c, 400, "未成功查询帖子记录", err)
+		return
+	}
 	log.Println("post's username :", post.UserName, " 你的名字", user.Name)
 	if post.UserName != user.Name {
 		response.Failed(c, 400, "权限不足!", err)

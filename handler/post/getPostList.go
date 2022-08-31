@@ -71,8 +71,9 @@ func ReturnPostList(c *gin.Context, posts []model.Post) {
 	responsePosts := make([]model.ResponsePost, len, 50)
 	for i := 0; i < len; i++ {
 		if userid != 0 {
-			responsePosts[i].IsThumb = GetIsThumb(userid, posts[i].ID)
-			responsePosts[i].IsFollow = GetIsFollow(userid, posts[i].ID)
+			responsePosts[i].IsThumb = databasePost.GetIsThumb(userid, posts[i].ID)
+			responsePosts[i].IsFollow = databasePost.GetIsFollow(userid, posts[i].ID)
+			responsePosts[i].IsReplied = databasePost.GetIsReply(userid, posts[i].ID)
 		}
 		responsePosts[i].UserName = posts[i].UserName
 		responsePosts[i].ID = posts[i].ID

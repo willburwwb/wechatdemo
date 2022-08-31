@@ -39,6 +39,7 @@ func InitRoute() *gin.Engine {
 		comment.POST("/create", comments.CreateComment)
 		comment.GET("/getCommentListByPost", comments.GetCommentListByPost)
 		comment.GET("/getCommentListByUser", comments.GetCommentListByUser)
+		comment.GET("/getReCommentListByUser")
 		comment.DELETE("/delete", comments.Delete)
 	}
 	return route

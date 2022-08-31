@@ -7,6 +7,7 @@ import (
 	"wechatdemo/response"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func Delete(c *gin.Context, userid uint, commentid uint) {
@@ -29,4 +30,9 @@ func Delete(c *gin.Context, userid uint, commentid uint) {
 	}
 	log.Println("删除成功")
 	response.Success(c, 200, "成功删除", comment)
+	err = db.Model(&model.Post{}).Where("id=?", comment.Postid).Update("reply", gorm.Expr("reply - ?", 1)).Error
+	if err != nil {
+		log.Println("更新评论数失败")
+	}
+	log.Println("删除评论成功")
 }
