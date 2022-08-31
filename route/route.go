@@ -15,6 +15,7 @@ func InitRoute() *gin.Engine {
 	{
 		user.POST("/login", users.ReorLo)
 		user.POST("/getcode", users.GetVerifyCode)
+		user.GET("/getUserDetail", middle.AuthJWT(), users.GetUserDetail)
 	}
 	post := route.Group("/post")
 	{
@@ -28,6 +29,7 @@ func InitRoute() *gin.Engine {
 		post.GET("/selectByTitle", posts.GetPostListByTitle)
 		//比postlist多一个title字段，get form方式
 		post.GET("/selectByTag", posts.GetPostListByTag)
+		post.GET("/getPostListByUser", posts.GetPostListByUser)
 		//比postlist多一个tag字段，get form方式
 
 	}
@@ -36,8 +38,8 @@ func InitRoute() *gin.Engine {
 		comment.Use(middle.AuthJWT())
 		comment.POST("/create", comments.CreateComment)
 		comment.GET("/getCommentListByPost", comments.GetCommentListByPost)
-		comment.GET("/getCommentListByUser")
-		comment.DELETE("/delete",comments.Delete)
+		comment.GET("/getCommentListByUser", comments.GetCommentListByUser)
+		comment.DELETE("/delete", comments.Delete)
 	}
 	return route
 }

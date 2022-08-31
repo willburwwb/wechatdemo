@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"wechatdemo/database"
 	databasePost "wechatdemo/database/post"
@@ -98,4 +99,35 @@ func GetPostList(c *gin.Context) {
 	}
 	posts := databasePost.GetPostList(c, &list, "", "")
 	ReturnPostList(c, posts)
+}
+func GetPostListByUser(c *gin.Context) {
+	offset, ok := strconv.Atoi(c.Query("offset"))
+	if ok != nil {
+		log.Println("参数错误")
+		response.Failed(c, 400, "参数错误", "")
+		return
+	}
+	limit, ok := strconv.Atoi(c.Query("limit"))
+	if ok != nil || limit == 0 {
+		log.Println("参数错误")
+		response.Failed(c, 400, "参数错误", "")
+		return
+	}
+	userid := c.GetUint("user")
+	userName, _ := databasePost.GetPostUsername(userid)
+
+	log.Printf("offset = %d limit = %d userName = %s\n", offset, limit, userName)
+	if err != nil {
+		return
+	}
+	if userid == 0 {
+		log.Println("用户id不存在")
+		response.Failed(c, 400, "用户id不存在", "")
+		return
+	}
+	canshu := make(map[string]interface{})
+	canshu["offset"] = offset
+	canshu["limit"] = limit
+	canshu["user_name"] = userName
+	databasePost.GetPostListByUSer(c, &canshu)
 }

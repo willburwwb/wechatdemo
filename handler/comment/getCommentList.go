@@ -41,3 +41,7 @@ func GetCommentListByPost(c *gin.Context) {
 	}
 	response.Success(c, 200, "成功", replyComments)
 }
+func GetCommentListByUser(c *gin.Context) {
+	userid := c.GetUint("user")
+	databasecomment.GetCommentByUser(c, userid)
+}

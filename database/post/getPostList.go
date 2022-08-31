@@ -1,6 +1,7 @@
 package post
 
 import (
+	"log"
 	"wechatdemo/database"
 	"wechatdemo/model"
 	"wechatdemo/response"
@@ -36,4 +37,33 @@ func GetPostList(c *gin.Context, list *model.ListType, methodname string, method
 		return nil
 	}
 	return posts
+}
+func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
+	db := database.Get()
+	var posts []model.Post
+	if (*params)["limit"] != nil {
+		//log.Println(reflect.TypeOf((*params)["limit"]))
+		if value, ok := (*params)["limit"].(int); ok {
+			log.Println("value limit=", int(value))
+			db = db.Limit(int(value))
+		}
+	}
+	if (*params)["offset"] != nil {
+		if value, ok := (*params)["offset"].(int); ok {
+			db = db.Offset(int(value))
+		}
+	}
+	if (*params)["user_name"] != nil {
+		if value, ok := (*params)["user_name"].(string); ok {
+			db = db.Where("user_name = ?", value)
+		}
+	}
+	err := db.Find(&posts).Error
+	if err != nil {
+		log.Println("根据用户搜寻帖子出现错误", err)
+		response.Failed(c, 400, "根据用户搜寻帖子出现错误", nil)
+		return
+	}
+	response.Success(c, 200, "根据用户搜寻帖子成功", posts)
+	log.Println("根据用户搜寻帖子成功")
 }
