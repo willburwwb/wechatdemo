@@ -13,7 +13,9 @@ import (
 func CreateComment(c *gin.Context) {
 	var comment model.Comment
 	if err := c.ShouldBind(&comment); err != nil {
-		response.Failed(c, 400, "创建评论参数有误", "")
+		log.Println(comment, "err:", err)
+		log.Println(comment.Postid, " ", comment.Content, " ", comment.Responseid)
+		response.Failed(c, 400, "创建评论参数有误", err)
 		return
 	}
 	user := c.GetUint("user")
