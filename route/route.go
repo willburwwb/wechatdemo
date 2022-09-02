@@ -2,6 +2,7 @@ package route
 
 import (
 	comments "wechatdemo/handler/comment"
+	"wechatdemo/handler/jpg"
 	posts "wechatdemo/handler/post"
 	users "wechatdemo/handler/user"
 	"wechatdemo/middle"
@@ -41,6 +42,11 @@ func InitRoute() *gin.Engine {
 		comment.GET("/getCommentListByUser", comments.GetCommentListByUser)
 		comment.GET("/getReCommentListByUser")
 		comment.DELETE("/delete", comments.Delete)
+	}
+	image := route.Group("/jpg", middle.AuthJWT()) 
+	{
+		image.POST("/download", jpg.DownloadJpg)
+		image.GET("/get", jpg.GetJpg)
 	}
 	return route
 }

@@ -19,6 +19,7 @@ func main() {
 	db.AutoMigrate(&model.Thumb{})
 	db.AutoMigrate(&model.Follow{})
 	db.AutoMigrate(&model.Comment{})
+	db.AutoMigrate(&model.Jpg{})
 	engine := route.InitRoute()
 	if err := engine.Run(":3000"); err != nil {
 		log.Fatal("service failed", err)
