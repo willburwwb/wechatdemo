@@ -39,8 +39,8 @@ func Update(c *gin.Context) {
 		response.Failed(c, 400, "未成功查询帖子记录", err)
 		return
 	}
-	log.Println("post's username :", post.UserName, " 你的名字", user.Name)
-	if post.UserName != user.Name {
+	log.Println("post's userId :", post.UserId, " 你的名字", userId)
+	if post.UserId != userId {
 		response.Failed(c, 400, "权限不足!", err)
 		return
 	}

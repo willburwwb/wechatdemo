@@ -3,7 +3,7 @@ package comment
 import (
 	"log"
 	databasecomment "wechatdemo/database/comment"
-	databasepost "wechatdemo/database/post"
+	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
@@ -19,12 +19,13 @@ func CreateComment(c *gin.Context) {
 		return
 	}
 	user := c.GetUint("user")
-	userName, err := databasepost.GetPostUsername(user)
+	userName, err := databaseuser.GetUserNameByID(user)
 	log.Println("userName为", userName)
 	if err != nil {
 		response.Failed(c, 400, "获取名字失败", "")
 		return
 	}
-	comment.UserName = userName
+	//comment.UserName = userName
+	comment.UserId = user
 	databasecomment.Create(c, &comment)
 }

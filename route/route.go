@@ -35,12 +35,14 @@ func InitRoute() *gin.Engine {
 	}
 	comment := route.Group("/comment", middle.AuthJWT())
 	{
-		comment.Use(middle.AuthJWT())
+
+		//comment.Use(middle.AuthJWT())
 		comment.POST("/create", comments.CreateComment)
 		comment.GET("/getCommentListByPost", comments.GetCommentListByPost)
 		comment.GET("/getCommentListByUser", comments.GetCommentListByUser)
 		comment.GET("/getReCommentListByUser")
 		comment.DELETE("/delete", comments.Delete)
 	}
+	route.GET("/comment/getUserByCommentid", comments.GetUserByCommentID)
 	return route
 }

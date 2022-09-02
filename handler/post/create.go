@@ -11,8 +11,6 @@ import (
 func Create(c *gin.Context) {
 	db := database.Get()
 	userId := c.GetUint("user")
-	var user model.User
-	db.Where("id = ?", userId).First(&user)
 	//获取参数
 	var post model.Post
 	if err := c.ShouldBind(&post); err != nil {
@@ -35,7 +33,7 @@ func Create(c *gin.Context) {
 		response.Failed(c, 400, "content或title未给出", nil)
 		return
 	}
-	post.UserName = user.Name
+	post.UserId = userId
 	db.Table("post").Create(&post)
 	response.Success(c, 200, "创建帖子成功", post)
 }

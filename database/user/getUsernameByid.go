@@ -6,7 +6,7 @@ import (
 	"wechatdemo/model"
 )
 
-func GetPostUsername(userid uint) (string, error) {
+func GetUserNameByID(userid uint) (string, error) {
 	var user model.User
 	db := database.Get()
 	err := db.Where("id=?", userid).Find(&user).Error
@@ -14,5 +14,6 @@ func GetPostUsername(userid uint) (string, error) {
 		log.Println("由id查找本名出错")
 		return "", err
 	}
+	log.Println("userid ", userid, " 对应 ", user.Name)
 	return user.Name, nil
 }

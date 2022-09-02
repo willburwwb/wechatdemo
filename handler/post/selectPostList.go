@@ -17,7 +17,8 @@ func GetPostListByTitle(c *gin.Context) {
 		return
 	}
 	posts := databasePost.GetPostList(c, &list, c.Query("title"), "title")
-	ReturnPostList(c, posts)
+	userid := c.GetUint("user")
+	databasePost.ReturnPostList(c, posts, userid)
 }
 func GetPostListByTag(c *gin.Context) {
 	list, err = InitGetPostList(c)
@@ -30,5 +31,6 @@ func GetPostListByTag(c *gin.Context) {
 		return
 	}
 	posts := databasePost.GetPostList(c, &list, tag, "tag")
-	ReturnPostList(c, posts)
+	userid := c.GetUint("user")
+	databasePost.ReturnPostList(c, posts, userid)
 }

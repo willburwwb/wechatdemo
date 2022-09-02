@@ -3,6 +3,7 @@ package post
 import (
 	"log"
 	"wechatdemo/database"
+	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
@@ -24,14 +25,11 @@ func GetIsThumb(user uint, postid uint) bool {
 func GetIsReply(userid uint, postid uint) bool {
 	db := database.Get()
 	var comment model.Comment
-	var user model.User
-	db.Where("id = ?", userid).Find(&user)
-	db.Where("postid = ? AND user_name = ?", postid, user.Name).Find(&comment)
+	db.Where("postid = ? AND user_id = ?", postid, userid).Find(&comment)
 	return comment.ID != 0
 }
-func ReturnPostList(c *gin.Context, posts []model.Post) {
+func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 	len := len(posts)
-	userid := c.GetUint("user")
 	log.Println("当前正在查询的人:", userid)
 	responsePosts := make([]model.ResponsePost, len, 50)
 	for i := 0; i < len; i++ {
@@ -40,7 +38,10 @@ func ReturnPostList(c *gin.Context, posts []model.Post) {
 			responsePosts[i].IsFollow = GetIsFollow(userid, posts[i].ID)
 			responsePosts[i].IsReplied = GetIsReply(userid, posts[i].ID)
 		}
-		responsePosts[i].UserName = posts[i].UserName
+		userName, err := databaseuser.GetUserNameByID(posts[i].UserId)
+		if err == nil {
+			responsePosts[i].UserName = userName
+		}
 		responsePosts[i].ID = posts[i].ID
 		responsePosts[i].Avatar = posts[i].Avatar
 		responsePosts[i].Title = posts[i].Title
@@ -101,9 +102,9 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 			db = db.Offset(int(value))
 		}
 	}
-	if (*params)["user_name"] != nil {
-		if value, ok := (*params)["user_name"].(string); ok {
-			db = db.Where("user_name = ?", value)
+	if (*params)["user_id"] != nil {
+		if value, ok := (*params)["user_id"].(uint); ok {
+			db = db.Where("user_id = ?", value)
 		}
 	}
 	err := db.Find(&posts).Error
@@ -114,5 +115,6 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 	}
 	//response.Success(c, 200, "根据用户搜寻帖子成功", posts)
 	log.Println("根据用户搜寻帖子成功")
-	ReturnPostList(c, posts)
+	userid := c.GetUint("user")
+	ReturnPostList(c, posts, userid)
 }
