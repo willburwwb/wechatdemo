@@ -58,6 +58,33 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 	}
 	response.Success(c, 200, "成功返回列表", responsePosts)
 }
+func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
+	log.Println("当前正在查询的人:", userid)
+	var responsePost model.ResponsePost
+	if userid != 0 {
+		responsePost.IsThumb = GetIsThumb(userid, post.ID)
+		responsePost.IsFollow = GetIsFollow(userid, post.ID)
+		responsePost.IsReplied = GetIsReply(userid, post.ID)
+	}
+	userName, err := databaseuser.GetUserNameByID(post.UserId)
+	if err == nil {
+		responsePost.UserName = userName
+	}
+	responsePost.ID = post.ID
+	responsePost.Avatar = post.Avatar
+	responsePost.Title = post.Title
+	responsePost.QQ = post.QQ
+	responsePost.Wx = post.Wx
+	responsePost.Content = post.Content
+	responsePost.Price = post.Price
+	responsePost.Location = post.Location
+	responsePost.Thumb = post.Thumb
+	responsePost.Reply = post.Reply
+	responsePost.Follow = post.Follow
+	responsePost.CreatedAt = post.CreatedAt
+	responsePost.Tag = post.Tag
+	response.Success(c, 200, "成功返回", responsePost)
+}
 func GetPostList(c *gin.Context, list *model.ListType, methodname string, method string) []model.Post {
 	db := database.Get()
 	var posts []model.Post
