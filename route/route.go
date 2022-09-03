@@ -1,7 +1,9 @@
 package route
 
 import (
+	"net/http"
 	comments "wechatdemo/handler/comment"
+	"wechatdemo/handler/jpg"
 	posts "wechatdemo/handler/post"
 	users "wechatdemo/handler/user"
 	"wechatdemo/middle"
@@ -11,6 +13,7 @@ import (
 
 func InitRoute() *gin.Engine {
 	route := gin.Default()
+	route.StaticFS("/static", http.Dir("./static"))
 	user := route.Group("/user")
 	{
 		user.POST("/login", users.ReorLo)
@@ -45,6 +48,10 @@ func InitRoute() *gin.Engine {
 		comment.GET("/getCommentListByUser", comments.GetCommentListByUser)
 		comment.GET("/getReCommentListByUser")
 		comment.DELETE("/delete", comments.Delete)
+	}
+	image := route.Group("/jpg", middle.AuthJWT()) 
+	{
+		image.POST("/download", jpg.DownloadJpg)
 	}
 	route.GET("/comment/getUserByCommentid", comments.GetUserByCommentID)
 	return route
