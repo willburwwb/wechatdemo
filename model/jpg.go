@@ -5,5 +5,5 @@ import "gorm.io/gorm"
 type Jpg struct {
 	gorm.Model
 	Jpgname  string `gorm:"jpgname" json:"jpgname"` //获取图片的途径
-	Codedata string `gorm:"codedata"`
+	Path string `gorm:"path"`
 }
