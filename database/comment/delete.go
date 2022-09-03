@@ -17,7 +17,7 @@ func Delete(c *gin.Context, userid uint, commentid uint) {
 	db.Where("id = ?", userid).First(&user)
 	log.Println("username为", user.Name)
 	db.Where("id = ?", commentid).First(&comment)
-	if user.Name != comment.UserName {
+	if userid != comment.UserId {
 		log.Println("该用户不具备删除权限或评论不存在")
 		response.Failed(c, 400, "该用户不具备删除权限或评论不存在", "")
 		return

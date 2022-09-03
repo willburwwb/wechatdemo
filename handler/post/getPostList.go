@@ -8,6 +8,7 @@ import (
 	"strings"
 	"wechatdemo/database"
 	databasePost "wechatdemo/database/post"
+	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
 	"wechatdemo/response"
 	"wechatdemo/verify"
@@ -64,34 +65,7 @@ func InitGetPostList(c *gin.Context) (model.ListType, error) {
 	}
 	return list, nil
 }
-func ReturnPostList(c *gin.Context, posts []model.Post) {
-	len := len(posts)
-	userid := JudgeNow(c)
-	log.Println("当前正在查询的人:", userid)
-	responsePosts := make([]model.ResponsePost, len, 50)
-	for i := 0; i < len; i++ {
-		if userid != 0 {
-			responsePosts[i].IsThumb = databasePost.GetIsThumb(userid, posts[i].ID)
-			responsePosts[i].IsFollow = databasePost.GetIsFollow(userid, posts[i].ID)
-			responsePosts[i].IsReplied = databasePost.GetIsReply(userid, posts[i].ID)
-		}
-		responsePosts[i].UserName = posts[i].UserName
-		responsePosts[i].ID = posts[i].ID
-		responsePosts[i].Avatar = posts[i].Avatar
-		responsePosts[i].Title = posts[i].Title
-		responsePosts[i].QQ = posts[i].QQ
-		responsePosts[i].Wx = posts[i].Wx
-		responsePosts[i].Content = posts[i].Content
-		responsePosts[i].Price = posts[i].Price
-		responsePosts[i].Location = posts[i].Location
-		responsePosts[i].Thumb = posts[i].Thumb
-		responsePosts[i].Reply = posts[i].Reply
-		responsePosts[i].Follow = posts[i].Follow
-		responsePosts[i].CreatedAt = posts[i].CreatedAt
-		responsePosts[i].Tag = posts[i].Tag
-	}
-	response.Success(c, 200, "成功返回列表", responsePosts)
-}
+
 func GetPostList(c *gin.Context) {
 	var list model.ListType
 	var err error
@@ -99,7 +73,8 @@ func GetPostList(c *gin.Context) {
 		return
 	}
 	posts := databasePost.GetPostList(c, &list, "", "")
-	ReturnPostList(c, posts)
+	userid := c.GetUint("user")
+	databasePost.ReturnPostList(c, posts, userid)
 }
 func GetPostListByUser(c *gin.Context) {
 	offset, ok := strconv.Atoi(c.Query("offset"))
@@ -115,7 +90,7 @@ func GetPostListByUser(c *gin.Context) {
 		return
 	}
 	userid := c.GetUint("user")
-	userName, _ := databasePost.GetPostUsername(userid)
+	userName, _ := databaseuser.GetUserNameByID(userid)
 
 	log.Printf("offset = %d limit = %d userName = %s\n", offset, limit, userName)
 	if err != nil {
@@ -129,6 +104,6 @@ func GetPostListByUser(c *gin.Context) {
 	canshu := make(map[string]interface{})
 	canshu["offset"] = offset
 	canshu["limit"] = limit
-	canshu["user_name"] = userName
+	canshu["user_id"] = c.GetUint("user")
 	databasePost.GetPostListByUSer(c, &canshu)
 }

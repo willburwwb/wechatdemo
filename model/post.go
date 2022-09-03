@@ -9,7 +9,8 @@ import (
 //储存的帖子也是创建帖子也是更改帖子的参数
 type Post struct {
 	gorm.Model
-	UserName string `json:"userName" postform:"userName"` //创建帖子的人
+	//UserName string `json:"userName" postform:"userName"` //创建帖子的人
+	UserId   uint   `json:"userId" postform:"userId"`
 	Avatar   string `json:"avatar" postform:"avatar"`
 	Title    string `json:"title" postform:"title" binding:"required"`
 	QQ       string `json:"qq" postform:"qq"`

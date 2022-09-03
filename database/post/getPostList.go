@@ -3,6 +3,7 @@ package post
 import (
 	"log"
 	"wechatdemo/database"
+	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
@@ -24,14 +25,11 @@ func GetIsThumb(user uint, postid uint) bool {
 func GetIsReply(userid uint, postid uint) bool {
 	db := database.Get()
 	var comment model.Comment
-	var user model.User
-	db.Where("id = ?", userid).Find(&user)
-	db.Where("postid = ? AND user_name = ?", postid, user.Name).Find(&comment)
+	db.Where("postid = ? AND user_id = ?", postid, userid).Find(&comment)
 	return comment.ID != 0
 }
-func ReturnPostList(c *gin.Context, posts []model.Post) {
+func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 	len := len(posts)
-	userid := c.GetUint("user")
 	log.Println("当前正在查询的人:", userid)
 	responsePosts := make([]model.ResponsePost, len, 50)
 	for i := 0; i < len; i++ {
@@ -40,7 +38,10 @@ func ReturnPostList(c *gin.Context, posts []model.Post) {
 			responsePosts[i].IsFollow = GetIsFollow(userid, posts[i].ID)
 			responsePosts[i].IsReplied = GetIsReply(userid, posts[i].ID)
 		}
-		responsePosts[i].UserName = posts[i].UserName
+		userName, err := databaseuser.GetUserNameByID(posts[i].UserId)
+		if err == nil {
+			responsePosts[i].UserName = userName
+		}
 		responsePosts[i].ID = posts[i].ID
 		responsePosts[i].Avatar = posts[i].Avatar
 		responsePosts[i].Title = posts[i].Title
@@ -56,6 +57,33 @@ func ReturnPostList(c *gin.Context, posts []model.Post) {
 		responsePosts[i].Tag = posts[i].Tag
 	}
 	response.Success(c, 200, "成功返回列表", responsePosts)
+}
+func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
+	log.Println("当前正在查询的人:", userid)
+	var responsePost model.ResponsePost
+	if userid != 0 {
+		responsePost.IsThumb = GetIsThumb(userid, post.ID)
+		responsePost.IsFollow = GetIsFollow(userid, post.ID)
+		responsePost.IsReplied = GetIsReply(userid, post.ID)
+	}
+	userName, err := databaseuser.GetUserNameByID(post.UserId)
+	if err == nil {
+		responsePost.UserName = userName
+	}
+	responsePost.ID = post.ID
+	responsePost.Avatar = post.Avatar
+	responsePost.Title = post.Title
+	responsePost.QQ = post.QQ
+	responsePost.Wx = post.Wx
+	responsePost.Content = post.Content
+	responsePost.Price = post.Price
+	responsePost.Location = post.Location
+	responsePost.Thumb = post.Thumb
+	responsePost.Reply = post.Reply
+	responsePost.Follow = post.Follow
+	responsePost.CreatedAt = post.CreatedAt
+	responsePost.Tag = post.Tag
+	response.Success(c, 200, "成功返回", responsePost)
 }
 func GetPostList(c *gin.Context, list *model.ListType, methodname string, method string) []model.Post {
 	db := database.Get()
@@ -101,9 +129,9 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 			db = db.Offset(int(value))
 		}
 	}
-	if (*params)["user_name"] != nil {
-		if value, ok := (*params)["user_name"].(string); ok {
-			db = db.Where("user_name = ?", value)
+	if (*params)["user_id"] != nil {
+		if value, ok := (*params)["user_id"].(uint); ok {
+			db = db.Where("user_id = ?", value)
 		}
 	}
 	err := db.Find(&posts).Error
@@ -114,5 +142,6 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 	}
 	//response.Success(c, 200, "根据用户搜寻帖子成功", posts)
 	log.Println("根据用户搜寻帖子成功")
-	ReturnPostList(c, posts)
+	userid := c.GetUint("user")
+	ReturnPostList(c, posts, userid)
 }

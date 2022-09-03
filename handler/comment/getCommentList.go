@@ -3,6 +3,7 @@ package comment
 import (
 	"log"
 	databasecomment "wechatdemo/database/comment"
+	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
@@ -27,13 +28,22 @@ func GetCommentListByPost(c *gin.Context) {
 		log.Println("获取第一个评论", i)
 		var replyComment model.ReplyComments
 		replyComment.Content = comment.Content
-		replyComment.UserName = comment.UserName
-
+		userName, err := databaseuser.GetUserNameByID(comment.UserId)
+		if err == nil {
+			replyComment.UserName = userName
+		} else {
+			continue
+		}
 		recomments = databasecomment.GetCommentByPost(requestComment.Postid, comment.ID)
 		for _, recomment := range recomments {
 			var reReplycomment model.ReplyComments
 			reReplycomment.Content = recomment.Content
-			reReplycomment.UserName = recomment.UserName
+			userName, err := databaseuser.GetUserNameByID(recomment.UserId)
+			if err != nil {
+				reReplycomment.UserName = userName
+			} else {
+				continue
+			}
 			replyComment.ReplyComments = append(replyComment.ReplyComments, reReplycomment)
 		}
 
