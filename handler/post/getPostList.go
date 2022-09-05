@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"wechatdemo/database"
 	databasePost "wechatdemo/database/post"
@@ -14,6 +13,7 @@ import (
 	"wechatdemo/verify"
 
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 )
 
 func JudgeNow(c *gin.Context) uint {
@@ -77,18 +77,8 @@ func GetPostList(c *gin.Context) {
 	databasePost.ReturnPostList(c, posts, userid)
 }
 func GetPostListByUser(c *gin.Context) {
-	offset, ok := strconv.Atoi(c.Query("offset"))
-	if ok != nil {
-		log.Println("参数错误")
-		response.Failed(c, 400, "参数错误", "")
-		return
-	}
-	limit, ok := strconv.Atoi(c.Query("limit"))
-	if ok != nil || limit == 0 {
-		log.Println("参数错误")
-		response.Failed(c, 400, "参数错误", "")
-		return
-	}
+	offset := com.StrTo(c.Query("offset")).MustInt64()
+	limit := com.StrTo(c.Query("limit")).MustInt()
 	userid := c.GetUint("user")
 	userName, _ := databaseuser.GetUserNameByID(userid)
 
