@@ -77,7 +77,7 @@ func GetPostList(c *gin.Context) {
 	databasePost.ReturnPostList(c, posts, userid)
 }
 func GetPostListByUser(c *gin.Context) {
-	offset := com.StrTo(c.Query("offset")).MustInt64()
+	offset := com.StrTo(c.Query("offset")).MustInt()
 	limit := com.StrTo(c.Query("limit")).MustInt()
 	userid := c.GetUint("user")
 	userName, _ := databaseuser.GetUserNameByID(userid)

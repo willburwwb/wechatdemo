@@ -6,6 +6,8 @@ type User struct {
 	gorm.Model
 	Email string `gorm:"type:varchar(50);not null"` //邮箱登录
 	Name  string `gorm:"type:varchar(50);not null"` //给用户赋予的名字
+	QQ    string `gorm:"qq"`
+	Wx    string
 }
 
 type VerifyCode struct {
@@ -16,4 +18,21 @@ type VerifyCode struct {
 
 type VerifyUser struct {
 	Email string `postform:"email" json:"email" form:"email" binding:"required"`
+}
+type Thumb struct {
+	gorm.Model
+	Userid uint `json:"userid" postform:"userid"`
+	Postid uint `json:"postid" postform:"postid" form:"postid" bind:"required"`
+}
+
+//收藏
+type Follow struct {
+	ID     uint `gorm:"primary_key"`
+	Userid uint `json:"userid" postform:"userid"`
+	Postid uint `json:"postid" postform:"postid" bind:"required"`
+}
+type RequestFollow struct {
+	gorm.Model
+	Limit  int `uri:"limit" json:"limit" form:"limit"`
+	Offset int `uri:"offset" json:"offset" form:"offset" bind:"required"`
 }

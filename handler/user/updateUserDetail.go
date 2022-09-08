@@ -16,9 +16,9 @@ func UpdateUserDetail(c *gin.Context) {
 		response.Failed(c, 400, "参数绑定出现问题", err)
 		return
 	}
-	if name, ok := json["name"].(string); !ok || name == "" {
-		log.Println("没有传用户名||格式不对")
-		response.Failed(c, 400, "没有传用户名||格式不对", "")
+	if json["name"] == nil && json["qq"] == nil && json["wx"] == nil {
+		log.Println("参数错误", json)
+		response.Failed(c, 400, "参数错误", nil)
 		return
 	}
 	userid := c.GetUint("user")

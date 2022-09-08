@@ -2,6 +2,7 @@ package post
 
 import (
 	"log"
+	"reflect"
 	"wechatdemo/database"
 	databaseuser "wechatdemo/database/user"
 	"wechatdemo/model"
@@ -117,20 +118,25 @@ func GetPostList(c *gin.Context, list *model.ListType, methodname string, method
 func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 	db := database.Get()
 	var posts []model.Post
+
+	if (*params)["offset"] != nil {
+		//log.Println(reflect.TypeOf((*params)["offset"]))
+		if value, ok := (*params)["offset"].(int); ok {
+			log.Println("value offset=", int(value))
+			db = db.Offset(int(value))
+		}
+	}
 	if (*params)["limit"] != nil {
-		//log.Println(reflect.TypeOf((*params)["limit"]))
+		log.Println(reflect.TypeOf((*params)["limit"]))
 		if value, ok := (*params)["limit"].(int); ok {
 			log.Println("value limit=", int(value))
 			db = db.Limit(int(value))
 		}
 	}
-	if (*params)["offset"] != nil {
-		if value, ok := (*params)["offset"].(int); ok {
-			db = db.Offset(int(value))
-		}
-	}
+	db = db.Order("id desc")
 	if (*params)["user_id"] != nil {
 		if value, ok := (*params)["user_id"].(uint); ok {
+			log.Println("value user_id", value)
 			db = db.Where("user_id = ?", value)
 		}
 	}

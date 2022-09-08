@@ -8,6 +8,7 @@ import (
 	"wechatdemo/response"
 
 	"github.com/gin-gonic/gin"
+	"github.com/unknwon/com"
 )
 
 func GetCommentListByPost(c *gin.Context) {
@@ -53,5 +54,7 @@ func GetCommentListByPost(c *gin.Context) {
 }
 func GetCommentListByUser(c *gin.Context) {
 	userid := c.GetUint("user")
-	databasecomment.GetCommentByUser(c, userid)
+	offset := com.StrTo(c.Query("offset")).MustInt()
+	limit := com.StrTo(c.Query("limit")).MustInt()
+	databasecomment.GetCommentByUser(c, userid, limit, offset)
 }

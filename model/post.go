@@ -48,23 +48,12 @@ type ResponsePost struct {
 //正常询问
 type ListType struct {
 	Mode   string `uri:"mode" json:"mode" form:"mode" `
-	Limit  int32  `uri:"limit" json:"limit" form:"limit"`
-	Offset int32  `uri:"offset" json:"offset" form:"offset" bind:"required"`
+	Limit  int    `uri:"limit" json:"limit" form:"limit"`
+	Offset int    `uri:"offset" json:"offset" form:"offset" bind:"required"`
 }
 
 //点赞
-type Thumb struct {
-	gorm.Model
-	Userid uint `json:"userid" postform:"userid"`
-	Postid uint `json:"postid" postform:"postid" form:"postid" bind:"required"`
-}
 
-//收藏
-type Follow struct {
-	gorm.Model
-	Userid uint `json:"userid" postform:"userid"`
-	Postid uint `json:"postid" postform:"postid" bind:"required"`
-}
 type DeletePost struct {
 	Postid uint `json:"postid" postform:"postid" bind:"required"`
 }

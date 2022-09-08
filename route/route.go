@@ -3,6 +3,7 @@ package route
 import (
 	"net/http"
 	comments "wechatdemo/handler/comment"
+	follows "wechatdemo/handler/follow"
 	"wechatdemo/handler/jpg"
 	posts "wechatdemo/handler/post"
 	users "wechatdemo/handler/user"
@@ -20,6 +21,9 @@ func InitRoute() *gin.Engine {
 		user.POST("/getcode", users.GetVerifyCode)
 		user.GET("/getUserDetail", middle.AuthJWT(), users.GetUserDetail)
 		user.PUT("/updateUserDetail", middle.AuthJWT(), users.UpdateUserDetail)
+		user.GET("/GetUserPostsSum", middle.AuthJWT(), users.GetUserPostsSum)
+		user.GET("/GetUserCommentsSum", middle.AuthJWT(), users.GetUserCommentsSum)
+		user.GET("/GetUserFollowsSum", middle.AuthJWT(), users.GetUserFollowsSum)
 	}
 	post := route.Group("/post")
 	{
@@ -28,15 +32,14 @@ func InitRoute() *gin.Engine {
 		post.POST("/create", posts.Create)
 		post.PUT("/update", posts.Update)
 		post.DELETE("/delete", posts.Delete)
-		post.POST("/thumb", posts.Thumb)
-		post.POST("/follow", posts.Follow)
+		post.POST("/thumb", follows.Thumb)
 		post.GET("/selectByTitle", posts.GetPostListByTitle)
 		//比postlist多一个title字段，get form方式
 		post.GET("/selectByTag", posts.GetPostListByTag)
 		post.GET("/getPostListByUser", posts.GetPostListByUser)
 		//比postlist多一个tag字段，get form方式
 
-		post.GET("/getPostByid",posts.GetPostByid)
+		post.GET("/getPostByid", posts.GetPostByid)
 
 	}
 	comment := route.Group("/comment", middle.AuthJWT())
@@ -49,7 +52,13 @@ func InitRoute() *gin.Engine {
 		comment.GET("/getReCommentListByUser")
 		comment.DELETE("/delete", comments.Delete)
 	}
-	image := route.Group("/jpg", middle.AuthJWT()) 
+	follow := route.Group("/follow", middle.AuthJWT())
+	{
+		follow.POST("/follow", follows.Follow)
+		follow.DELETE("/deletefollow", follows.DeleteFollow)
+		follow.GET("/getFollowList", follows.GetFollowList)
+	}
+	image := route.Group("/jpg", middle.AuthJWT())
 	{
 		image.POST("/download", jpg.DownloadJpg)
 	}
