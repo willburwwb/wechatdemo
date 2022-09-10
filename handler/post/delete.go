@@ -4,10 +4,13 @@ import (
 	"log"
 	"reflect"
 	"wechatdemo/database"
+	databasecomment "wechatdemo/database/comment"
+	databasefollow "wechatdemo/database/follow"
 	"wechatdemo/model"
 	"wechatdemo/response"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func Delete(c *gin.Context) {
@@ -38,9 +41,46 @@ func Delete(c *gin.Context) {
 		response.Failed(c, 400, "权限不足", "")
 		return
 	}
-	err := db.Delete(&post).Error
+	err := DeleteShiwu(db, &post)
 	if err != nil {
 		log.Println("删除失败", err)
 	}
 	response.Success(c, 200, "删除成功!", post)
+}
+func DeleteShiwu(db *gorm.DB, post *model.Post) error {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return err
+	}
+	var comments []model.Comment
+	var follows []model.Follow
+	tx.Where("postid = ?", post.ID).Find(&comments)
+	tx.Where("postid = ?", post.ID).Find(&follows)
+	for _, comment := range comments {
+		log.Println("正在删除帖子评论", comment.ID)
+		_, err := databasecomment.Delete(&comment)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	for _, follow := range follows {
+		log.Println("正在删除帖子follow", follow.ID)
+		_, err := databasefollow.DeleteFollow(&follow)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	if err := tx.Delete(post).Error; err != nil {
+		log.Println("删除帖子错误", err)
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }

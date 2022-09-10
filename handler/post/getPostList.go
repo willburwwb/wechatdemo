@@ -73,7 +73,8 @@ func GetPostList(c *gin.Context) {
 		return
 	}
 	posts := databasePost.GetPostList(c, &list, "", "")
-	userid := c.GetUint("user")
+	userid := JudgeNow(c)
+	log.Println("user = ?", userid)
 	databasePost.ReturnPostList(c, posts, userid)
 }
 func GetPostListByUser(c *gin.Context) {

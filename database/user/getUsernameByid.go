@@ -17,3 +17,14 @@ func GetUserNameByID(userid uint) (string, error) {
 	log.Println("userid ", userid, " 对应 ", user.Name)
 	return user.Name, nil
 }
+func GetUserqqAndWxByID(userid uint) (string, string, error) {
+	var user model.User
+	db := database.Get()
+	err := db.Where("id = ?", userid).Find(&user).Error
+	if err != nil {
+		log.Println("由id查找本人出错")
+		return "", "", nil
+	}
+	log.Println("userid ", userid, " 对应 ", user.Name)
+	return user.QQ, user.Wx, err
+}

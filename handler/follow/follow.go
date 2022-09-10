@@ -2,7 +2,6 @@ package post
 
 import (
 	"log"
-	"wechatdemo/database"
 	databasefollow "wechatdemo/database/follow"
 	databasepost "wechatdemo/database/post"
 	"wechatdemo/model"
@@ -29,7 +28,12 @@ func DeleteFollow(c *gin.Context) {
 		return
 	}
 	follow.Userid = user
-	databasefollow.DeleteFollow(c, &follow)
+	msg, err := databasefollow.DeleteFollow(&follow)
+	if err != nil {
+		response.Failed(c, 400, err.Error(), msg)
+		return
+	}
+	response.Success(c, 200, "成功删除", msg)
 }
 func GetFollowList(c *gin.Context) {
 	user := c.GetUint("user")
@@ -49,10 +53,4 @@ func GetFollowList(c *gin.Context) {
 		}
 	}
 	databasepost.ReturnPostList(c, posts, user)
-}
-func GetIsFollow(user uint, postid uint) bool {
-	db := database.Get()
-	var follow model.Follow
-	db.Where("userid = ? AND postid = ?", user, postid).Find(&follow)
-	return follow.ID != 0
 }

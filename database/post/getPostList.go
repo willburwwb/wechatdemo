@@ -46,8 +46,10 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 		responsePosts[i].ID = posts[i].ID
 		responsePosts[i].Avatar = posts[i].Avatar
 		responsePosts[i].Title = posts[i].Title
-		responsePosts[i].QQ = posts[i].QQ
-		responsePosts[i].Wx = posts[i].Wx
+		var ok error
+		if responsePosts[i].QQ, responsePosts[i].Wx, ok = databaseuser.GetUserqqAndWxByID(userid); ok != nil {
+			log.Println("获取用户qq,wx出错")
+		}
 		responsePosts[i].Content = posts[i].Content
 		responsePosts[i].Price = posts[i].Price
 		responsePosts[i].Location = posts[i].Location
@@ -74,8 +76,10 @@ func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
 	responsePost.ID = post.ID
 	responsePost.Avatar = post.Avatar
 	responsePost.Title = post.Title
-	responsePost.QQ = post.QQ
-	responsePost.Wx = post.Wx
+	var ok error
+	if responsePost.QQ, responsePost.Wx, ok = databaseuser.GetUserqqAndWxByID(userid); ok != nil {
+		log.Println("获取用户qq,wx出错")
+	}
 	responsePost.Content = post.Content
 	responsePost.Price = post.Price
 	responsePost.Location = post.Location
@@ -120,7 +124,6 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 	var posts []model.Post
 
 	if (*params)["offset"] != nil {
-		//log.Println(reflect.TypeOf((*params)["offset"]))
 		if value, ok := (*params)["offset"].(int); ok {
 			log.Println("value offset=", int(value))
 			db = db.Offset(int(value))

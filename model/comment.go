@@ -15,6 +15,7 @@ type RequestCommentByPost struct {
 	Postid uint `json:"postid" postform:"postid" form:"postid" uri:"postid" binding:"required"`
 }
 type ReplyComments struct {
+	ID            uint
 	UserName      string
 	Content       string
 	ReplyComments []ReplyComments

@@ -19,18 +19,7 @@ type VerifyCode struct {
 type VerifyUser struct {
 	Email string `postform:"email" json:"email" form:"email" binding:"required"`
 }
-type Thumb struct {
-	gorm.Model
-	Userid uint `json:"userid" postform:"userid"`
-	Postid uint `json:"postid" postform:"postid" form:"postid" bind:"required"`
-}
 
-//收藏
-type Follow struct {
-	ID     uint `gorm:"primary_key"`
-	Userid uint `json:"userid" postform:"userid"`
-	Postid uint `json:"postid" postform:"postid" bind:"required"`
-}
 type RequestFollow struct {
 	gorm.Model
 	Limit  int `uri:"limit" json:"limit" form:"limit"`

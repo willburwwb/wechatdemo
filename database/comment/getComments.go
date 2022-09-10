@@ -25,7 +25,6 @@ func GetCommentByUser(c *gin.Context, userid uint, limit int, offset int) {
 	var comments []model.Comment
 	var db = database.Get()
 	log.Println("评论查询 userid ", userid)
-
 	if userid == 0 {
 		log.Println("未查询到该用户/token不存在")
 		response.Failed(c, 400, "未查询到该用户", "")

@@ -28,6 +28,7 @@ func GetCommentListByPost(c *gin.Context) {
 	for i, comment := range comments {
 		log.Println("获取第一个评论", i)
 		var replyComment model.ReplyComments
+		replyComment.ID = comment.ID
 		replyComment.Content = comment.Content
 		userName, err := databaseuser.GetUserNameByID(comment.UserId)
 		if err == nil {
@@ -38,12 +39,12 @@ func GetCommentListByPost(c *gin.Context) {
 		recomments = databasecomment.GetCommentByPost(requestComment.Postid, comment.ID)
 		for _, recomment := range recomments {
 			var reReplycomment model.ReplyComments
+			reReplycomment.ID = recomment.ID
+			log.Println("回复的评论", reReplycomment.ID)
 			reReplycomment.Content = recomment.Content
 			userName, err := databaseuser.GetUserNameByID(recomment.UserId)
-			if err != nil {
+			if err == nil {
 				reReplycomment.UserName = userName
-			} else {
-				continue
 			}
 			replyComment.ReplyComments = append(replyComment.ReplyComments, reReplycomment)
 		}

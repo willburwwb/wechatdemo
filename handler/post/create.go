@@ -25,10 +25,6 @@ func Create(c *gin.Context) {
 	// price := c.PostForm("price")
 	// location := c.PostForm("location")
 	// tag := c.PostForm("tag")
-	if post.QQ == "" && post.Wx == "" {
-		response.Failed(c, 400, "必须给定至少一个联系方式", nil)
-		return
-	}
 	if post.Content == "" || post.Title == "" {
 		response.Failed(c, 400, "content或title未给出", nil)
 		return

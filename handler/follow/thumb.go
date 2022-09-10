@@ -42,9 +42,3 @@ func Thumb(c *gin.Context) {
 	}
 	response.Success(c, 200, "更新点赞数成功", "")
 }
-func GetIsThumb(user uint, postid uint) bool {
-	db := database.Get()
-	var thumb model.Thumb
-	db.Where("userid = ? AND postid = ?", user, postid).Find(&thumb)
-	return thumb.ID != 0
-}
