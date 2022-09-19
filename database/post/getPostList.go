@@ -47,7 +47,7 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 		responsePosts[i].Avatar = posts[i].Avatar
 		responsePosts[i].Title = posts[i].Title
 		var ok error
-		if responsePosts[i].QQ, responsePosts[i].Wx, ok = databaseuser.GetUserqqAndWxByID(userid); ok != nil {
+		if responsePosts[i].QQ, responsePosts[i].Wx, ok = databaseuser.GetUserqqAndWxByID(posts[i].ID); ok != nil {
 			log.Println("获取用户qq,wx出错")
 		}
 		responsePosts[i].Content = posts[i].Content
@@ -77,7 +77,7 @@ func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
 	responsePost.Avatar = post.Avatar
 	responsePost.Title = post.Title
 	var ok error
-	if responsePost.QQ, responsePost.Wx, ok = databaseuser.GetUserqqAndWxByID(userid); ok != nil {
+	if responsePost.QQ, responsePost.Wx, ok = databaseuser.GetUserqqAndWxByID(post.ID); ok != nil {
 		log.Println("获取用户qq,wx出错")
 	}
 	responsePost.Content = post.Content
