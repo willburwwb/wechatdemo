@@ -19,14 +19,14 @@ func GetCommentListByPost(c *gin.Context) {
 	}
 	var comments []model.Comment
 	var recomments []model.Comment
-	log.Println("获取评论数据")
+	log.Println("根据帖子获取评论数据")
 	comments = databasecomment.GetCommentByPost(requestComment.Postid, 0)
 	if comments == nil {
 		return
 	}
 	var replyComments []model.ReplyComments
 	for i, comment := range comments {
-		log.Println("获取第一个评论", i)
+		log.Println("获取第", i+1, "个评论")
 		var replyComment model.ReplyComments
 		replyComment.ID = comment.ID
 		replyComment.Content = comment.Content

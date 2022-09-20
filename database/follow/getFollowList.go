@@ -22,3 +22,9 @@ func GetFollowList(c *gin.Context, userId uint, requestFollow *model.RequestFoll
 	log.Println("获取followlist成功")
 	return &follows
 }
+func GetFollowsSumByPost(postid uint) int {
+	var follows []model.Follow
+	db := database.Get()
+	db.Where("postid = ?", postid).Find(&follows)
+	return len(follows)
+}

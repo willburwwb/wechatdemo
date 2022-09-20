@@ -10,9 +10,9 @@ import (
 type Post struct {
 	gorm.Model
 	//UserName string `json:"userName" postform:"userName"` //创建帖子的人
-	UserId uint   `json:"userId" postform:"userId"`
-	Avatar string `json:"avatar" postform:"avatar"`
-	Title  string `json:"title" postform:"title" binding:"required"`
+	UserId   uint   `json:"userId" postform:"userId" gorm:"user_id"`
+	Avatar   string `json:"avatar" postform:"avatar"`
+	Title    string `json:"title" postform:"title" binding:"required"`
 	Content  string `json:"content" postform:"content" binding:"required"`
 	Price    string `json:"price" postform:"price"`
 	Location string `json:"location" postform:"location"`

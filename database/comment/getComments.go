@@ -12,7 +12,7 @@ import (
 func GetCommentByPost(postid uint, responseid uint) []model.Comment {
 	var comments []model.Comment
 	var db = database.Get()
-	log.Println("评论查询:", postid, " responseid:", responseid)
+	log.Println("查询postid=", postid, " responseid=", responseid)
 	err := db.Where("postid = ? AND responseid = ?", postid, responseid).Order("id desc").Find(&comments).Error
 	if err != nil {
 		log.Println("失败", err)
@@ -38,4 +38,10 @@ func GetCommentByUser(c *gin.Context, userid uint, limit int, offset int) {
 	}
 	log.Println("查询成功")
 	response.Success(c, 200, "查询数据成功", comments)
+}
+func GetCommentsSumByPost(postid uint) int {
+	var comments []model.Comment
+	db := database.Get()
+	db.Where("postid = ?", postid).Find(&comments)
+	return len(comments)
 }

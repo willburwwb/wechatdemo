@@ -14,7 +14,7 @@ func GetUserNameByID(userid uint) (string, error) {
 		log.Println("由id查找本名出错")
 		return "", err
 	}
-	log.Println("userid ", userid, " 对应 ", user.Name)
+	//log.Println("userid ", userid, " 对应 ", user.Name)
 	return user.Name, nil
 }
 func GetUserqqAndWxByID(postid uint) (string, string, error) {
@@ -31,6 +31,6 @@ func GetUserqqAndWxByID(postid uint) (string, string, error) {
 		log.Println("由id查找本人出错")
 		return "", "", nil
 	}
-	log.Println("userid ", post.UserId, " 对应 ", user.Name)
+	//log.Println("userid ", post.UserId, " 对应 ", user.Name)
 	return user.QQ, user.Wx, err
 }
