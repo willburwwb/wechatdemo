@@ -28,3 +28,9 @@ func GetFollowsSumByPost(postid uint) int {
 	db.Where("postid = ?", postid).Find(&follows)
 	return len(follows)
 }
+func GetThumbsSumByPost(postid uint) int {
+	var thumbs []model.Thumb
+	db := database.Get()
+	db.Where("postid = ?", postid).Find(&thumbs)
+	return len(thumbs)
+}

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	if err := database.InitLocalDB(); err != nil {
+	if err := database.InitDB(); err != nil {
 		log.Println("数据库连接失败")
 		return
 	}

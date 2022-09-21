@@ -55,9 +55,10 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 		responsePosts[i].Content = posts[i].Content
 		responsePosts[i].Price = posts[i].Price
 		responsePosts[i].Location = posts[i].Location
-		responsePosts[i].Thumb = posts[i].Thumb
+		//responsePosts[i].Thumb = posts[i].Thumb
 		//responsePosts[i].Reply = posts[i].Reply
 		//responsePosts[i].Follow = posts[i].Follow
+		responsePosts[i].Thumb = databasefollow.GetThumbsSumByPost(posts[i].ID)
 		responsePosts[i].Reply = databasecomment.GetCommentsSumByPost(posts[i].ID)
 		responsePosts[i].Follow = databasefollow.GetFollowsSumByPost(posts[i].ID)
 		responsePosts[i].CreatedAt = posts[i].CreatedAt
@@ -87,9 +88,10 @@ func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
 	responsePost.Content = post.Content
 	responsePost.Price = post.Price
 	responsePost.Location = post.Location
-	responsePost.Thumb = post.Thumb
+	//responsePost.Thumb = post.Thumb
 	// responsePost.Reply = post.Reply
 	// responsePost.Follow = post.Follow
+	responsePost.Thumb = databasefollow.GetThumbsSumByPost(post.ID)
 	responsePost.Reply = databasecomment.GetCommentsSumByPost(post.ID)
 	responsePost.Follow = databasefollow.GetFollowsSumByPost(post.ID)
 	responsePost.CreatedAt = post.CreatedAt

@@ -77,6 +77,7 @@ func DeleteShiwu(db *gorm.DB, post *model.Post) error {
 			return err
 		}
 	}
+
 	if err := tx.Delete(post).Error; err != nil {
 		log.Println("删除帖子错误", err)
 		tx.Rollback()
