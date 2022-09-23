@@ -45,3 +45,16 @@ func GetCommentsSumByPost(postid uint) int {
 	db.Where("postid = ?", postid).Find(&comments)
 	return len(comments)
 }
+
+func GetCommentByMyself(c *gin.Context, userid uint, limit int, offset int) {
+	postids := GetCommentIdByUser(userid)
+	commentids := GetCommentIdByUser(userid)
+	var comments []model.Comment
+	DB := database.Get()
+	err := DB.Offset(offset).Limit(limit).Where("postid IN ?", postids).Or("responseid IN ?", commentids).Order("id desc").Find(&comments).Error
+	if err != nil {
+		response.Failed(c, 400, "查询回复失败!", nil)
+		return
+	}
+	response.Success(c, 200, "查询回复成功!", comments)
+}
