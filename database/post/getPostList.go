@@ -109,7 +109,9 @@ func GetPostList(c *gin.Context, list *model.ListType, methodname string, method
 			err = db.Limit(int(list.Limit)).Offset(int(list.Offset)).Order("id desc").Where("title Like ?", "%"+methodname+"%").Find(&(posts)).Error
 		} else {
 
-			err = db.Where("tag = ?", methodname).Limit(int(list.Limit)).Offset(int(list.Offset)).Order("id desc").Find(&(posts)).Error
+			//			err = db.Where("tag = ?", methodname).Limit(int(list.Limit)).Offset(int(list.Offset)).Order("id desc").Find(&(posts)).Error
+			rows := db.Where("tag =?", methodname).Limit(int(list.Limit)).Offset(int(list.Offset)).Order("id desc").Find(&(posts)).RowsAffected
+			log.Println("查询tag为", methodname, " 查询的条数为", rows)
 		}
 	}
 	if list.Mode == "Hot" {

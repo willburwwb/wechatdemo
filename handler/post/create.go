@@ -32,6 +32,10 @@ func Create(c *gin.Context) {
 		return
 	}
 	post.UserId = userId
-	db.Table("post").Create(&post)
+	err := db.Table("post").Create(&post).Error
+	if err != nil {
+		log.Println("创建帖子失败")
+	}
+	log.Println("创建帖子", post)
 	response.Success(c, 200, "创建帖子成功", post)
 }
