@@ -1,6 +1,7 @@
 package post
 
 import (
+	"log"
 	"wechatdemo/database"
 	"wechatdemo/model"
 	"wechatdemo/response"
@@ -25,6 +26,7 @@ func Create(c *gin.Context) {
 	// price := c.PostForm("price")
 	// location := c.PostForm("location")
 	// tag := c.PostForm("tag")
+	log.Println("创建帖子的tag为", post.Tag)
 	if post.Content == "" || post.Title == "" {
 		response.Failed(c, 400, "content或title未给出", nil)
 		return

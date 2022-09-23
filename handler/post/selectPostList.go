@@ -1,6 +1,7 @@
 package post
 
 import (
+	"log"
 	databasePost "wechatdemo/database/post"
 	"wechatdemo/model"
 	"wechatdemo/response"
@@ -30,6 +31,7 @@ func GetPostListByTag(c *gin.Context) {
 		response.Failed(c, 400, "tag参数错误", "")
 		return
 	}
+	log.Println("此时查询的tag为", tag)
 	posts := databasePost.GetPostList(c, &list, tag, "tag")
 	userid := c.GetUint("user")
 	databasePost.ReturnPostList(c, posts, userid)
