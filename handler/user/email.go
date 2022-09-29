@@ -33,7 +33,7 @@ func SendEmail(userEmail string, code string) {
 	// 	log.Println("读取文件失败", err)
 	// 	return
 	// }
-	tmpl, err := template.ParseFiles("./static/1.tmpl")
+	tmpl, err := template.ParseFiles("static/1.tmpl")
 	if err != nil {
 		log.Println(err)
 		return
