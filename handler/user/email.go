@@ -7,6 +7,8 @@ import (
 	"net/smtp"
 
 	"github.com/jordan-wright/email"
+
+	_ "embed"
 )
 
 // func SendEmail(userEmail string, code string) {
@@ -22,6 +24,19 @@ import (
 // 	}
 
 // }
+
+//go:embed 1.html
+var staticfile string
+var Tmpl *template.Template
+var err error
+
+func init() {
+	Tmpl, err = template.New("test").Parse(staticfile)
+	if err != nil {
+		log.Println("解析失败")
+	}
+	log.Println("解析成功")
+}
 func SendEmail(userEmail string, code string) {
 	e := email.NewEmail()
 	e.From = "不期而喻小程序团队 <husttryanderror@163.com>"
@@ -33,13 +48,8 @@ func SendEmail(userEmail string, code string) {
 	// 	log.Println("读取文件失败", err)
 	// 	return
 	// }
-	tmpl, err := template.ParseFiles("static/1.tmpl")
-	if err != nil {
-		log.Println(err)
-		return
-	}
 	buf := bytes.NewBuffer([]byte{})
-	err = tmpl.Execute(buf, code)
+	err = Tmpl.Execute(buf, code)
 	if err != nil {
 		log.Println("读取html失败")
 		return
