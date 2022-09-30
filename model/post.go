@@ -11,6 +11,7 @@ type Post struct {
 	gorm.Model
 	//UserName string `json:"userName" postform:"userName"` //创建帖子的人
 	UserId   uint   `json:"userId" postform:"userId" gorm:"user_id"`
+	Fileid   string `json:"fileid" postform:"fileid" `
 	Avatar   string `json:"avatar" postform:"avatar"`
 	Title    string `json:"title" postform:"title" binding:"required"`
 	Content  string `json:"content" postform:"content" binding:"required"`
@@ -27,6 +28,8 @@ type ResponsePost struct {
 	ID        uint `gorm:"primarykey"`
 	CreatedAt time.Time
 	UserName  string
+	Userid    uint
+	Fileid    string
 	Avatar    string
 	Title     string
 	QQ        string

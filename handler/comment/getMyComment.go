@@ -22,7 +22,7 @@ func GetCommentListByMyself(c *gin.Context) {
 	for _, comment := range comments {
 		//log.Println("获取第", i+1, "个评论")
 		var replyComment model.ReplyComments
-		replyComment.ID = comment.ID
+		replyComment.ID = comment.Postid
 		replyComment.Content = comment.Content
 		userName, err := databaseuser.GetUserNameByID(comment.UserId)
 		if err == nil {

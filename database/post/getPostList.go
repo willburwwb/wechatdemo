@@ -41,6 +41,8 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 			responsePosts[i].IsFollow = GetIsFollow(userid, posts[i].ID)
 			responsePosts[i].IsReplied = GetIsReply(userid, posts[i].ID)
 		}
+		responsePosts[i].Userid = userid
+		responsePosts[i].Fileid = posts[i].Fileid
 		userName, err := databaseuser.GetUserNameByID(posts[i].UserId)
 		if err == nil {
 			responsePosts[i].UserName = userName
@@ -69,6 +71,8 @@ func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
 func ReturnPost(c *gin.Context, post *model.Post, userid uint) {
 	log.Println("当前正在查询的人:", userid)
 	var responsePost model.ResponsePost
+	responsePost.Userid = userid
+	responsePost.Fileid = post.Fileid
 	if userid != 0 {
 		responsePost.IsThumb = GetIsThumb(userid, post.ID)
 		responsePost.IsFollow = GetIsFollow(userid, post.ID)

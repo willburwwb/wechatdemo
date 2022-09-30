@@ -21,6 +21,7 @@ func main() {
 	db.AutoMigrate(&model.Follow{})
 	db.AutoMigrate(&model.Comment{})
 	db.AutoMigrate(&model.Jpg{})
+	db.AutoMigrate(&model.File{})
 	engine := route.InitRoute()
 	utils.Clear()
 	if err := engine.Run(":3000"); err != nil {
