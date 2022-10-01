@@ -31,40 +31,40 @@ func GetIsReply(userid uint, postid uint) bool {
 	db.Where("postid = ? AND user_id = ?", postid, userid).Find(&comment)
 	return comment.ID != 0
 }
-func ReturnPostList(c *gin.Context, posts []model.Post, userid uint) {
-	len := len(posts)
+func ReturnPostList(c *gin.Context, posts *[]model.Post, userid uint) {
+	len := len(*posts)
 	log.Println("当前正在查询的人:", userid)
 	responsePosts := make([]model.ResponsePost, len, 50)
 	for i := 0; i < len; i++ {
 		if userid != 0 {
-			responsePosts[i].IsThumb = GetIsThumb(userid, posts[i].ID)
-			responsePosts[i].IsFollow = GetIsFollow(userid, posts[i].ID)
-			responsePosts[i].IsReplied = GetIsReply(userid, posts[i].ID)
+			responsePosts[i].IsThumb = GetIsThumb(userid, (*posts)[i].ID)
+			responsePosts[i].IsFollow = GetIsFollow(userid, (*posts)[i].ID)
+			responsePosts[i].IsReplied = GetIsReply(userid, (*posts)[i].ID)
 		}
 		responsePosts[i].Userid = userid
-		responsePosts[i].Fileid = posts[i].Fileid
-		userName, err := databaseuser.GetUserNameByID(posts[i].UserId)
+		responsePosts[i].Fileid = (*posts)[i].Fileid
+		userName, err := databaseuser.GetUserNameByID((*posts)[i].UserId)
 		if err == nil {
 			responsePosts[i].UserName = userName
 		}
-		responsePosts[i].ID = posts[i].ID
-		responsePosts[i].Avatar = posts[i].Avatar
-		responsePosts[i].Title = posts[i].Title
+		responsePosts[i].ID = (*posts)[i].ID
+		responsePosts[i].Avatar = (*posts)[i].Avatar
+		responsePosts[i].Title = (*posts)[i].Title
 		var ok error
-		if responsePosts[i].QQ, responsePosts[i].Wx, ok = databaseuser.GetUserqqAndWxByID(posts[i].ID); ok != nil {
+		if responsePosts[i].QQ, responsePosts[i].Wx, ok = databaseuser.GetUserqqAndWxByID((*posts)[i].ID); ok != nil {
 			log.Println("获取用户qq,wx出错")
 		}
-		responsePosts[i].Content = posts[i].Content
-		responsePosts[i].Price = posts[i].Price
-		responsePosts[i].Location = posts[i].Location
+		responsePosts[i].Content = (*posts)[i].Content
+		responsePosts[i].Price = (*posts)[i].Price
+		responsePosts[i].Location = (*posts)[i].Location
 		//responsePosts[i].Thumb = posts[i].Thumb
 		//responsePosts[i].Reply = posts[i].Reply
 		//responsePosts[i].Follow = posts[i].Follow
-		responsePosts[i].Thumb = databasefollow.GetThumbsSumByPost(posts[i].ID)
-		responsePosts[i].Reply = databasecomment.GetCommentsSumByPost(posts[i].ID)
-		responsePosts[i].Follow = databasefollow.GetFollowsSumByPost(posts[i].ID)
-		responsePosts[i].CreatedAt = posts[i].CreatedAt
-		responsePosts[i].Tag = posts[i].Tag
+		responsePosts[i].Thumb = databasefollow.GetThumbsSumByPost((*posts)[i].ID)
+		responsePosts[i].Reply = databasecomment.GetCommentsSumByPost((*posts)[i].ID)
+		responsePosts[i].Follow = databasefollow.GetFollowsSumByPost((*posts)[i].ID)
+		responsePosts[i].CreatedAt = (*posts)[i].CreatedAt
+		responsePosts[i].Tag = (*posts)[i].Tag
 	}
 	response.Success(c, 200, "成功返回列表", responsePosts)
 }
@@ -166,5 +166,5 @@ func GetPostListByUSer(c *gin.Context, params *map[string]interface{}) {
 	//response.Success(c, 200, "根据用户搜寻帖子成功", posts)
 	log.Println("根据用户搜寻帖子成功")
 	userid := c.GetUint("user")
-	ReturnPostList(c, posts, userid)
+	ReturnPostList(c, &posts, userid)
 }

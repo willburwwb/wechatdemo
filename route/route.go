@@ -6,6 +6,7 @@ import (
 	follows "wechatdemo/handler/follow"
 	"wechatdemo/handler/jpg"
 	posts "wechatdemo/handler/post"
+	reports "wechatdemo/handler/report"
 	users "wechatdemo/handler/user"
 	"wechatdemo/middle"
 
@@ -62,6 +63,10 @@ func InitRoute() *gin.Engine {
 	image := route.Group("/jpg", middle.AuthJWT())
 	{
 		image.POST("/download", jpg.DownloadJpg)
+	}
+	report := route.Group("/report", middle.AuthJWT())
+	{
+		report.POST("/report", reports.Report)
 	}
 	route.GET("/comment/getUserByCommentid", comments.GetUserByCommentID)
 	return route

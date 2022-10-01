@@ -75,7 +75,7 @@ func GetPostList(c *gin.Context) {
 	posts := databasePost.GetPostList(c, &list, "", "")
 	userid := JudgeNow(c)
 	log.Println("user = ?", userid)
-	databasePost.ReturnPostList(c, posts, userid)
+	databasePost.ReturnPostList(c, &posts, userid)
 }
 func GetPostListByUser(c *gin.Context) {
 	offset := com.StrTo(c.Query("offset")).MustInt()

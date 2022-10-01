@@ -52,5 +52,5 @@ func GetFollowList(c *gin.Context) {
 			posts = append(posts, *post)
 		}
 	}
-	databasepost.ReturnPostList(c, posts, user)
+	databasepost.ReturnPostList(c, &posts, user)
 }

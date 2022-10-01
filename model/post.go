@@ -58,3 +58,9 @@ type ListType struct {
 type DeletePost struct {
 	Postid uint `json:"postid" postform:"postid" bind:"required"`
 }
+
+type Report struct {
+	Username string `json:"Username" postform:"Username"`
+	Postid   uint   `json:"postid" postform:"postid" bind:"required"`
+	Content  string `json:"content" postform:"content" bind:"required"`
+}
