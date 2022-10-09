@@ -17,15 +17,11 @@ func Delete(c *gin.Context) {
 	db := database.Get()
 	userId := c.GetUint("user")
 	log.Println("当前正在执行删除操作的人", userId)
-	//获取参数
-	if userId == 0 {
-		response.Failed(c, 400, "当前用户不存在token", err)
-		return
-	}
 	json := make(map[string]interface{})
 	var post model.Post
-	if err := c.ShouldBindJSON(&json); err != nil {
-		response.Failed(c, 400, "参数错误", "")
+	if err := c.BindJSON(&json); err != nil {
+		response.Failed(c, 400, "参数错误", err)
+		log.Println(json)
 		return
 	}
 	if json["postid"] == nil {
@@ -35,7 +31,11 @@ func Delete(c *gin.Context) {
 	} else {
 		log.Println("postid为", json["postid"], " 类型为", reflect.TypeOf(json["postid"]))
 	}
-	db.Where("id = ?", json["postid"]).First(&post)
+	isFind := db.Where("id = ?", json["postid"]).First(&post).RowsAffected
+	if isFind == 0 {
+		log.Println("帖子不存在")
+		return
+	}
 	log.Println("post's userId :", post.UserId, " 你的id", userId)
 	if post.UserId != userId {
 		response.Failed(c, 400, "权限不足", "")

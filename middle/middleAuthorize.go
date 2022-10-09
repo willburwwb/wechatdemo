@@ -2,7 +2,6 @@ package middle
 
 import (
 	"net/http"
-	"strings"
 	"wechatdemo/database"
 	"wechatdemo/model"
 	"wechatdemo/verify"
@@ -13,14 +12,6 @@ import (
 func AuthJWT() gin.HandlerFunc { //中间件
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
-
-		//验证格式
-		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") { //token为空或者不是以"Bearer "开头
-			c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-			c.Abort() //抛弃
-			return
-		}
-
 		tokenString = tokenString[7:] //丢弃开头部分
 
 		token, claims, err := verify.ParseToken(tokenString)

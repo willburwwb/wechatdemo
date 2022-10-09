@@ -47,7 +47,7 @@ func GetCommentsSumByPost(postid uint) int {
 }
 
 func GetCommentByMyself(c *gin.Context, userid uint, limit int, offset int) []model.Comment{
-	postids := GetCommentIdByUser(userid)
+	postids := GetPostIdByUser(userid)
 	commentids := GetCommentIdByUser(userid)
 	var comments []model.Comment
 	DB := database.Get()
