@@ -1,6 +1,7 @@
 package post
 
 import (
+	"encoding/json"
 	"log"
 	"wechatdemo/database"
 	"wechatdemo/model"
@@ -14,6 +15,7 @@ func Create(c *gin.Context) {
 	userId := c.GetUint("user")
 	//获取参数
 	var post model.Post
+	fileids := c.PostFormArray("fileids")
 	if err := c.ShouldBind(&post); err != nil {
 		response.Failed(c, 400, "参数错误", "")
 		return
@@ -31,8 +33,14 @@ func Create(c *gin.Context) {
 		response.Failed(c, 400, "content或title未给出", nil)
 		return
 	}
+	data, err := json.Marshal(fileids)
+	if err != nil {
+		response.Failed(c, 400, "转json失败", nil)
+		return
+	}
+	post.FileId = string(data)
 	post.UserId = userId
-	err := db.Table("post").Create(&post).Error
+	err = db.Table("post").Create(&post).Error
 	if err != nil {
 		log.Println("创建帖子失败")
 	}
