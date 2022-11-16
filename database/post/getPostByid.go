@@ -19,9 +19,13 @@ func GetPostByID(postid uint) *model.Post {
 
 func AnalyzeJson(fileid string) []string {
 	var ids []string
-	err := json.Unmarshal([]byte(fileid), &ids)
-	if err != nil {
-		log.Println("解析json出错!")
+	if fileid != "" {
+		err := json.Unmarshal([]byte(fileid), &ids)
+		if err != nil {
+			log.Println("解析json出错!", err)
+		}
+	} else {
+		ids = append(ids, "")
 	}
 	return ids
 }

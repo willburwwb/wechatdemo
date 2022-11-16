@@ -38,7 +38,11 @@ func Create(c *gin.Context) {
 		response.Failed(c, 400, "转json失败", nil)
 		return
 	}
-	post.FileId = string(data)
+	if len(data) != 0 {
+		post.FileId = string(data)
+	} else {
+		post.FileId = ""
+	}
 	post.UserId = userId
 	err = db.Table("post").Create(&post).Error
 	if err != nil {
