@@ -68,6 +68,13 @@ func ReorLo(c *gin.Context) {
 			}
 
 			DB.Create(&user) //存入数据库
+
+			token, err := verify.ReleaseToken(user) //获取token
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "mes": "生成token失败!"})
+				return
+			}
+			c.Header("Authorization", token)
 			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "注册成功!"})
 		} else {
 			DB.Where("email = ?", email).Delete(&verifyCode)
@@ -104,7 +111,7 @@ func ReorLo(c *gin.Context) {
 	}
 }
 
-//获取验证码
+// 获取验证码
 func GetVerifyCode(c *gin.Context) {
 	//获取参数
 	var user model.VerifyUser
