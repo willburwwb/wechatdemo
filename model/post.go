@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-//储存的帖子也是创建帖子也是更改帖子的参数
+// 储存的帖子也是创建帖子也是更改帖子的参数
 type Post struct {
 	gorm.Model
 	//UserName string `json:"userName" postform:"userName"` //创建帖子的人
@@ -23,7 +23,7 @@ type Post struct {
 	Tag      string `json:"tag" postform:"tag"`
 }
 
-//返回响应的帖子
+// 返回响应的帖子
 type ResponsePost struct {
 	ID        uint `gorm:"primarykey"`
 	CreatedAt time.Time
@@ -46,7 +46,7 @@ type ResponsePost struct {
 	Tag       string
 }
 
-//正常询问
+// 正常询问
 type ListType struct {
 	Mode   string `uri:"mode" json:"mode" form:"mode" `
 	Limit  int    `uri:"limit" json:"limit" form:"limit"`
