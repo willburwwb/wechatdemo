@@ -11,7 +11,7 @@ type Post struct {
 	gorm.Model
 	//UserName string `json:"userName" postform:"userName"` //创建帖子的人
 	UserId   uint   `json:"userId" postform:"userId" gorm:"user_id"`
-	FileId   string `json:"fileid" postform:"fileid" gorm:"fileid"`
+	FileId   string `json:"fileid" postform:"fileid" gorm:"column:fileid"`
 	Avatar   string `json:"avatar" postform:"avatar"`
 	Title    string `json:"title" postform:"title" binding:"required"`
 	Content  string `json:"content" postform:"content" binding:"required"`
