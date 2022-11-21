@@ -75,7 +75,7 @@ func ReorLo(c *gin.Context) {
 				return
 			}
 			c.Header("Authorization", token)
-			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "注册成功!"})
+			c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "注册成功!", "data": token})
 		} else {
 			DB.Where("email = ?", email).Delete(&verifyCode)
 			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "验证码无效!"})
