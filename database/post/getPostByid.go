@@ -27,5 +27,6 @@ func AnalyzeJson(fileid string) []string {
 	} else {
 		ids = append(ids, "")
 	}
+	log.Println("fileid count", len(ids), " fileids ", ids, " fileid ", fileid)
 	return ids
 }
