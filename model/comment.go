@@ -18,5 +18,8 @@ type ReplyComments struct {
 	ID            uint
 	UserName      string
 	Content       string
+	Fileid        string
+	Wx            string
+	QQ            string
 	ReplyComments []ReplyComments
 }

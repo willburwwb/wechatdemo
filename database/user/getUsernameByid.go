@@ -34,3 +34,13 @@ func GetUserqqAndWxByID(postid uint) (string, string, error) {
 	//log.Println("userid ", post.UserId, " 对应 ", user.Name)
 	return user.QQ, user.Wx, err
 }
+
+func GetUserDetailById(id uint) (string, string, string) {
+	db := database.Get()
+	var user model.User
+	if err := db.Model(&model.User{}).Where("id = ?", id).First(&user).Error; err != nil {
+		log.Println("获取用户信息错误", err.Error())
+		return "", "", ""
+	}
+	return user.Fileid, user.QQ, user.Wx
+}
