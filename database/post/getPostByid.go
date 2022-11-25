@@ -1,6 +1,7 @@
 package post
 
 import (
+	"encoding/json"
 	"log"
 	"wechatdemo/database"
 	"wechatdemo/model"
@@ -14,4 +15,13 @@ func GetPostByID(postid uint) *model.Post {
 		return nil
 	}
 	return &post
+}
+
+func AnalyzeJson(fileid string) []string {
+	var ids []string
+	err := json.Unmarshal([]byte(fileid), &ids)
+	if err != nil {
+		log.Println("解析json出错!")
+	}
+	return ids
 }
