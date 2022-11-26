@@ -36,6 +36,7 @@ func GetCommentListByPost(c *gin.Context) {
 		} else {
 			continue
 		}
+		replyComment.Fileid, replyComment.QQ, replyComment.Wx = databaseuser.GetUserDetailById(comment.UserId)
 		recomments = databasecomment.GetCommentByPost(requestComment.Postid, comment.ID)
 		for _, recomment := range recomments {
 			var reReplycomment model.ReplyComments
@@ -46,6 +47,7 @@ func GetCommentListByPost(c *gin.Context) {
 			if err == nil {
 				reReplycomment.UserName = userName
 			}
+			reReplycomment.Fileid, reReplycomment.QQ, reReplycomment.Wx = databaseuser.GetUserDetailById(recomment.UserId)
 			replyComment.ReplyComments = append(replyComment.ReplyComments, reReplycomment)
 		}
 

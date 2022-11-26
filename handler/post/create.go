@@ -16,6 +16,7 @@ func Create(c *gin.Context) {
 	//获取参数
 	var post model.Post
 	fileids := c.PostFormArray("fileids")
+	log.Println(fileids)
 	if err := c.ShouldBind(&post); err != nil {
 		response.Failed(c, 400, "参数错误", "")
 		return
@@ -38,7 +39,12 @@ func Create(c *gin.Context) {
 		response.Failed(c, 400, "转json失败", nil)
 		return
 	}
-	post.FileId = string(data)
+	log.Println(string(data))
+	if len(data) != 0 {
+		post.FileId = string(data)
+	} else {
+		post.FileId = ""
+	}
 	post.UserId = userId
 	err = db.Table("post").Create(&post).Error
 	if err != nil {

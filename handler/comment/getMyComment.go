@@ -21,6 +21,9 @@ func GetCommentListByMyself(c *gin.Context) {
 	var replyComments []model.ReplyComments
 	for _, comment := range comments {
 		//log.Println("获取第", i+1, "个评论")
+		if comment.UserId == userid {
+			continue
+		}
 		var replyComment model.ReplyComments
 		replyComment.ID = comment.Postid
 		replyComment.Content = comment.Content
@@ -30,6 +33,7 @@ func GetCommentListByMyself(c *gin.Context) {
 		} else {
 			continue
 		}
+		//replyComment.Fileid, replyComment.QQ, replyComment.Wx = databaseuser.GetUserDetailById(comment.UserId)
 		replyComments = append(replyComments, replyComment)
 	}
 	response.Success(c, 200, "成功", replyComments)

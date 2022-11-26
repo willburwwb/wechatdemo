@@ -12,6 +12,11 @@ import (
 	"github.com/jordan-wright/email"
 )
 
+/*
+/report/report
+postid uint //帖子的id
+content string //帖子的string
+*/
 func Report(c *gin.Context) {
 	var report model.Report
 	if err := c.ShouldBind(&report); err != nil {
